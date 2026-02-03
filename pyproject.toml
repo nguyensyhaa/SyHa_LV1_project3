@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "syha-lv1-project3"
+version = "0.1.0"
+description = "High-performance ETL pipeline using Pandas, Multiprocessing, and Postgres COPY"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+faker = ">=40.1.2"
+pandas = ">=2.0.0"
+psycopg2-binary = ">=2.9.11"
+python-dotenv = ">=1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
