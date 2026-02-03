@@ -6,32 +6,26 @@ This project implements a high-performance ETL (Extract – Transform – Load) 
 - Transforms and cleans data using Pandas with a Dead Letter Queue strategy.
 - Loads data into PostgreSQL using the binary COPY protocol.
 
-## ERD (Entity Relationship Diagram)
+### 1. Table: `products` (Clean Data)
+This table stores valid product data ready for analysis.
 
-```mermaid
-erDiagram
-    PRODUCTS {
-        UUID product_id PK
-        VARCHAR name "Product Name (Not Null)"
-        DECIMAL price "Must be > 0"
-        VARCHAR category
-        TIMESTAMP created_at
-    }
+| Column Name | Data Type | Constraint | Description |
+| :--- | :--- | :--- | :--- |
+| `product_id` | UUID | **PK** | Unique identifier for each product |
+| `name` | VARCHAR(255) | NOT NULL | Name of the product (Cleaned, Title Case) |
+| `price` | DECIMAL(10, 2) |CHECK (> 0) | Product price (Must be positive) |
+| `category` | VARCHAR(100) | - | Product category |
+| `created_at` | TIMESTAMP | - | Record creation timestamp |
 
-    QUARANTINE_DATA {
-        UUID product_id
-        VARCHAR name
-        DECIMAL price "Negative values here"
-        VARCHAR error_reason "Why it failed"
-    }
-```
+### 2. Table: `quarantine_data` (Dirty Data)
+This table (or CSV folder) captures data rejected by validation rules.
 
-### Schema Details
-
-| Table | Column | Description |
+| Column Name | Data Type | Description |
 | :--- | :--- | :--- |
-| **products** | product_id, name, price, category, created_at | Main product inventory (Clean Data) |
-| **quarantine** | product_id, name, price, error_reason | Rejected rows for audit (Dirty Data) |
+| `product_id` | UUID | ID of the rejected record |
+| `name` | VARCHAR | Original name (may be null) |
+| `price` | DECIMAL | Invalid price (e.g., negative values) |
+| `error_reason`| VARCHAR | **Why it failed** (e.g. "Negative Price", "Missing Name") |
 
 ## ETL Pipeline
 
